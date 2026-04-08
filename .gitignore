@@ -1,0 +1,16 @@
+# Terraform
+.terraform/
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
