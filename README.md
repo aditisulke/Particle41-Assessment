@@ -1,17 +1,10 @@
-# 🚀 SimpleTimeService - DevOps Project
+# 🚀 SimpleTimeService - DevOps Assessment Project
 
 ## 📌 Overview
 
-This project demonstrates an end-to-end DevOps workflow by building, containerizing, and deploying a simple web service using modern tools and best practices.
+SimpleTimeService is a lightweight backend microservice built using Node.js that returns the current timestamp and the client’s IP address in JSON format.
 
-The application returns the current timestamp and the visitor's IP address in JSON format.
-
-This project showcases:
-
-* Infrastructure as Code (Terraform)
-* Containerization (Docker)
-* CI/CD Automation (GitHub Actions)
-* Cloud Deployment (AWS)
+This project demonstrates an end-to-end DevOps workflow including application development, containerization, infrastructure provisioning, and CI/CD automation.
 
 ---
 
@@ -19,24 +12,30 @@ This project showcases:
 
 The application is deployed using the following architecture:
 
-* VPC with public and private subnets
-* Application running in private subnet
-* Load Balancer in public subnet for external access
-* Docker container deployed via ECS (Fargate)
-* CI/CD pipeline using GitHub Actions
+* AWS VPC provisioned using Terraform
+* Public and private subnet structure (if configured)
+* EC2 instance hosting the Docker container
+* Application exposed via public IP / Load Balancer
+* CI/CD pipeline using GitHub Actions for automated build and deployment
 
 ---
 
-## ⚙️ Tech Stack
+## 🎯 Application Details
 
-| Category       | Tool           |
-| -------------- | -------------- |
-| Language       | Node.js        |
-| Container      | Docker         |
-| CI/CD          | GitHub Actions |
-| IaC            | Terraform      |
-| Cloud Provider | AWS            |
-| Registry       | DockerHub      |
+### Endpoint
+
+```bash
+GET /
+```
+
+### Response
+
+```json
+{
+  "timestamp": "2026-01-01T12:00:00.000Z",
+  "ip": "client-ip-address"
+}
+```
 
 ---
 
@@ -44,7 +43,7 @@ The application is deployed using the following architecture:
 
 ```
 .
-├── app/                # Application source code
+├── app/                # Node.js application
 │   ├── index.js
 │   ├── package.json
 │   └── Dockerfile
@@ -60,25 +59,6 @@ The application is deployed using the following architecture:
 
 ---
 
-## 🚀 Application Details
-
-### Endpoint
-
-```
-GET /
-```
-
-### Response
-
-```json
-{
-  "timestamp": "2026-01-01T12:00:00.000Z",
-  "ip": "client-ip-address"
-}
-```
-
----
-
 ## 🔧 Prerequisites
 
 Ensure the following tools are installed:
@@ -90,9 +70,9 @@ Ensure the following tools are installed:
 
 ---
 
-## 🔐 AWS Setup
+## 🔐 AWS Configuration
 
-Configure AWS credentials:
+Configure AWS credentials locally:
 
 ```bash
 aws configure
@@ -100,11 +80,11 @@ aws configure
 
 Provide:
 
-* Access Key
-* Secret Key
+* AWS Access Key
+* AWS Secret Key
 * Region
 
-⚠️ Do NOT commit credentials to the repository.
+⚠️ Do not commit credentials to the repository.
 
 ---
 
@@ -123,7 +103,9 @@ docker build -t simple-time-service .
 docker run -p 3000:3000 simple-time-service
 ```
 
-### 3. Access
+### 3. Access Application
+
+Open in browser:
 
 ```
 http://localhost:3000
@@ -139,19 +121,19 @@ http://localhost:3000
 cd terraform
 ```
 
-### 2. Initialize
+### 2. Initialize Terraform
 
 ```bash
 terraform init
 ```
 
-### 3. Plan
+### 3. Preview Changes
 
 ```bash
 terraform plan
 ```
 
-### 4. Apply
+### 4. Apply Configuration
 
 ```bash
 terraform apply
@@ -161,32 +143,36 @@ Type `yes` when prompted.
 
 ---
 
-## 🌐 Access Application
+## 🌐 Access Deployed Application
 
-After deployment, Terraform outputs the Load Balancer URL.
+After deployment, access the application using:
 
-Open in browser:
+* EC2 Public IP
+  OR
+* Load Balancer URL (if configured)
+
+Example:
 
 ```
-http://<load-balancer-url>
+http://<your-public-ip>
 ```
 
 ---
 
 ## 🔄 CI/CD Pipeline
 
-This project uses GitHub Actions for automation.
+This project uses GitHub Actions to automate the workflow.
 
 ### Pipeline Steps:
 
-1. Trigger on push to `main`
-2. Build Docker image
-3. Push image to DockerHub
-4. Deploy infrastructure using Terraform
+1. Triggered on push to `main` branch
+2. Builds Docker image
+3. Pushes image to DockerHub
+4. (Optional) Deploys infrastructure using Terraform
 
-### Required Secrets
+### Required GitHub Secrets
 
-Add the following in GitHub:
+Configure the following secrets in your repository:
 
 * `DOCKER_USERNAME`
 * `DOCKER_PASSWORD` (Docker access token)
@@ -195,36 +181,45 @@ Add the following in GitHub:
 
 ---
 
-## 🔐 Security Considerations
+## 🔐 Security Practices
 
 * No credentials stored in code
-* Uses GitHub Secrets for sensitive data
-* Application runs as non-root user in container
+* Sensitive data managed using GitHub Secrets
+* Docker container runs as a non-root user
 
 ---
 
 ## ⚡ Design Decisions
 
-* **ECS Fargate** chosen for serverless container management
-* **Terraform** used for reproducible infrastructure
-* **Docker** ensures consistent runtime environment
-* **CI/CD pipeline** automates deployment
+* Node.js chosen for lightweight and fast API development
+* Docker used for consistent and portable runtime
+* Terraform used for reproducible infrastructure provisioning
+* EC2 chosen for simplicity and control over deployment
+* GitHub Actions used to automate CI/CD pipeline
 
 ---
 
-## 🌟 Possible Improvements
+## 📈 Scalability
 
-* Auto-scaling configuration
-* Monitoring (CloudWatch)
-* Remote Terraform backend (S3 + DynamoDB)
-* Blue/Green deployments
-* Health checks
+The current architecture supports horizontal scaling. The setup can be extended using AWS Auto Scaling Groups to handle increased traffic based on demand.
+
+---
+## 🚀 Future Enhancements
+
+The following improvements can be implemented to further enhance the project:
+
+- Add monitoring and logging using AWS CloudWatch
+- Configure a remote Terraform backend (S3 + DynamoDB) for state management and locking
+- Introduce container image versioning for better release management
+- Add health checks and improve fault tolerance
+- Implement a CI/CD pipeline with environment-based deployments (dev/staging/production)
+- Enhance security using IAM roles and least-privilege access policies
 
 ---
 
 ## 🧹 Cleanup
 
-To avoid AWS charges:
+To avoid unnecessary cloud charges, destroy resources:
 
 ```bash
 terraform destroy
@@ -240,6 +235,6 @@ terraform destroy
 
 ## 📌 Notes
 
-This project was created as part of a DevOps assessment to demonstrate practical knowledge of modern cloud-native workflows and infrastructure automation.
+This project was developed as part of a DevOps assessment to demonstrate practical knowledge of containerization, infrastructure as code, and CI/CD automation in a cloud environment.
 
 ---
